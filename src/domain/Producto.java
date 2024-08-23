@@ -84,6 +84,10 @@ public abstract class Producto {
    public void descontarStock(int sotckADescontar){
       this.sotck = getSotck() - sotckADescontar ;
    }
+   public float generarTicket(int cantidadVendida){
+      System.out.println(identificadorAlfNum + " " + descripcion.toUpperCase() + " " + cantidadVendida + " x "+ calcularPrecioVenta() ) ;
+      return cantidadVendida * calcularPrecioVenta();
+   }
    public void mostrarInfoProducto(){
       System.out.println("ID: " + identificadorAlfNum);
       System.out.println("Descripción: " + descripcion );

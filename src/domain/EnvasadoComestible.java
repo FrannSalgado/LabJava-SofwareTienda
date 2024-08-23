@@ -2,7 +2,7 @@ package domain;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.util.zip.DataFormatException;
+
 
 public class EnvasadoComestible extends Envasado {
     private LocalDate vencimiento;
