@@ -2,14 +2,14 @@ package domain;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
+
 
 public class Tienda {
     String nombre;
     private int capacidadDeAlmacenamiento;
     private int existencias = 0;
     private float saldoEnCaja;
-    public ArrayList<? extends Object> catalogo;
+    private ArrayList<? extends Object> catalogo;
 
     public Tienda(String nombre, int capacidadDeAlmacenamiento, float saldoEnCaja) {
         this.nombre = nombre;
@@ -173,6 +173,7 @@ public class Tienda {
                             listaPosiciones.get(x).add(i); //posicion en array
                             if (((Producto) iterador).sotck > cantidadProductoBuscado) {
                                 listaPosiciones.get(x).add(cantidadProductoBuscado); // stock a descontar
+
                                 System.out.println("Pedido Generado .");
 
                             }
@@ -180,10 +181,14 @@ public class Tienda {
                                 listaPosiciones.get(x).add(((Producto) iterador).sotck); //descontar stock total
                                 System.out.println("“Hay productos con stock disponible menor al solicitado.");
                             }
+                        } else {
+                            System.out.println("El producto " + ((Producto) iterador).identificadorAlfNum + " " + ((Producto) iterador).descripcion + " no se encuentra disponible");
+                            return listaPosiciones;
                         }
                     }
                 }
             }
+
             return listaPosiciones;
         } else {
             System.out.println("No puedes comprar mas de 12 unidades de ningun producto");
@@ -196,6 +201,7 @@ public class Tienda {
         List<List<Integer>> listaPosiciones = new ArrayList<>();
         List<Integer> datosProducto1 = new ArrayList<>();
         List<Integer> datosProducto2 = new ArrayList<>();
+
         listaPosiciones.add(datosProducto1);
         listaPosiciones.add(datosProducto2);
         if (cantidad1 <= 12 && cantidad2 <= 12) {
@@ -218,16 +224,16 @@ public class Tienda {
                             listaPosiciones.get(x).add(i); //posicion en array
                             if (((Producto) iterador).sotck > cantidadProductoBuscado) {
                                 listaPosiciones.get(x).add(cantidadProductoBuscado); // stock a descontar
+
                                 System.out.println("Pedido Generado .");
-
-                                continue;
-
-
                             }
                             if (((Producto) iterador).sotck < cantidadProductoBuscado) {
                                 listaPosiciones.get(x).add(((Producto) iterador).sotck); //descontar stock total
                                 System.out.println("“Hay productos con stock disponible menor al solicitado.");
                             }
+                        } else {
+                            System.out.println("El producto " + ((Producto) iterador).identificadorAlfNum + " " + ((Producto) iterador).descripcion + " no se encuentra disponible");
+                            return listaPosiciones;
                         }
                     }
                 }
@@ -248,7 +254,6 @@ public class Tienda {
         listaPosiciones.add(datosProducto2);
         listaPosiciones.add(datosProducto3);
         if (cantidad1 <= 12 && cantidad2 <= 12 && cantidad3 < 12) {
-
             String productoBuscado = "";
             int cantidadProductoBuscado = -1;
             for (int x = 0; x < listaPosiciones.size(); x++) {
@@ -269,18 +274,18 @@ public class Tienda {
                         }
                         if (((Producto) iterador).descripcion.equalsIgnoreCase(productoBuscado) && ((Producto) iterador).disponibilidad == true) {
                             listaPosiciones.get(x).add(i); //posicion en array
-                            if (((Producto) iterador).sotck > cantidadProductoBuscado) {
+                            if (((Producto) iterador).sotck >= cantidadProductoBuscado) {
                                 listaPosiciones.get(x).add(cantidadProductoBuscado); // stock a descontar
                                 System.out.println("Pedido Generado .");
-
-                                continue;
-
-
                             }
                             if (((Producto) iterador).sotck < cantidadProductoBuscado) {
                                 listaPosiciones.get(x).add(((Producto) iterador).sotck); //descontar stock total
                                 System.out.println("“Hay productos con stock disponible menor al solicitado.");
                             }
+                        }
+                        if (((Producto) iterador).sotck == 0) {
+                            System.out.println("El producto " + ((Producto) iterador).identificadorAlfNum + " " + ((Producto) iterador).descripcion + " no se encuentra disponible");
+                            return listaPosiciones;
                         }
                     }
                 }
@@ -292,37 +297,65 @@ public class Tienda {
         }
     }
 
-    public void realizarVenta(List<List<Integer>> posiciones) {
-        float totalDeVenta = 0;
-        System.out.println("####### "+ nombre.toUpperCase() +" #######");
-        for (int x = 0; x < posiciones.size(); x++) { //lsiatapadre
-            int posisionProducto = -1;
-            int stockADescontar = 0;
-            for (int i = 0; i < posiciones.get(x).size(); i++) { // sublista
-                if (i == 0) {
-                    posisionProducto = posiciones.get(x).get(i); // Primer valor en poscisionProducto
-                } else if (i == 1) {
-                    stockADescontar = posiciones.get(x).get(i); // Segundo valor en stockADescontar
-                    totalDeVenta = totalDeVenta + actualizarCatalogo(posisionProducto, stockADescontar);
-                }
 
+    public int generarTicket(List<List<Object>> datosDelTicket, String nombreTienda) {
+        float ventaTotal = 0;
 
-            }
+        System.out.println("####### " + nombreTienda.toUpperCase() + " #######");
+        for (int x = 0; x < datosDelTicket.size(); x++) {
+            String detalleProducto = (String) datosDelTicket.get(x).get(0);
+            float precioProducto = (float) datosDelTicket.get(x).get(1);
+
+            System.out.println(detalleProducto);
+
+            ventaTotal += precioProducto;
         }
-        System.out.println("TOTAL VENTA: $" + totalDeVenta);
+        System.out.println("En caso de Descuento, se aplicaran Automaticamente : $" + ventaTotal);
+        System.out.println("TOTAL VENTA: $" + ventaTotal);
         System.out.println("####### GRACIAS POR SU COMPRA #######");
+        return 4;
     }
 
-    public void añadirSaldoDeVenta(int cantidadProductosVendidos, float ganancia) {
+    public void realizarVenta(List<List<Integer>> posiciones) {
+        try {
+            List<List<Object>> datosDeTicket = new ArrayList<>();
+
+            for (int x = 0; x < posiciones.size(); x++) {
+                datosDeTicket.add(new ArrayList<>());
+
+                int posicionProducto = posiciones.get(x).get(0);
+                int stockADescontar = posiciones.get(x).get(1);
+
+                List<Object> datosProducto = actualizarCatalogo(posicionProducto, stockADescontar);
+                datosDeTicket.get(x).add(datosProducto.get(0));
+                datosDeTicket.get(x).add(datosProducto.get(1));
+            }
+
+            generarTicket(datosDeTicket, nombre);
+        } catch (Exception e) {
+            System.out.println("Error al Procesar Venta");
+        }
+
+
+    }
+
+
+    public void aniadirSaldoDeVenta(int cantidadProductosVendidos, float ganancia) {
         this.saldoEnCaja = saldoEnCaja + ganancia;
     }
 
-    public float actualizarCatalogo(int posicion, int stock) {
+    public List<Object> actualizarCatalogo(int posicion, int stock) {
+        List<Object> datosParaElTicket = new ArrayList<>();
         Producto producto = (Producto) catalogo.get(posicion);
+        String stringBuilder= producto.identificadorAlfNum + " " + producto.descripcion.toUpperCase() + " " + stock + " x " + producto.calcularPrecioVenta();;
+        datosParaElTicket.add(stringBuilder);
+        datosParaElTicket.add(producto.calcularPrecioVenta() * stock);
 
-        añadirSaldoDeVenta(stock, producto.calcularPrecioVenta());
+
+        aniadirSaldoDeVenta(stock, producto.calcularPrecioVenta());
         producto.descontarStock(stock);
-        return producto.generarTicket(stock);
+
+        return datosParaElTicket;
 
 
     }

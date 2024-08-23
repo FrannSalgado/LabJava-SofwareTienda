@@ -1,105 +1,135 @@
 package domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class Producto {
-   protected String descripcion;
-   protected String identificadorAlfNum;
-   protected int sotck;
-   protected float precio;
-   protected float gananciaPorcentual;
-   protected boolean disponibilidad;
+    protected String descripcion;
+    protected String identificadorAlfNum;
+    protected int sotck;
+    protected float precio;
+    protected float gananciaPorcentual;
+    protected boolean disponibilidad;
+    protected boolean esImportado;
+    protected float descuento;
 
 
-   public Producto(String identificadorAlfNum, String descripcion, int stock, float precio, float ganaciaPorcentual, boolean disponibilidad) {
-      if (identificadorAlfNum.length() != 5){
-         throw new IllegalArgumentException("El identificador debe tener 5 caracteres.");
-      }
-      this.descripcion=descripcion;
-      this.identificadorAlfNum=identificadorAlfNum;
-      this.sotck=stock;
-      this.precio=precio;
-      this.gananciaPorcentual=ganaciaPorcentual;
-      this.disponibilidad=disponibilidad;
+    public Producto(String identificadorAlfNum, String descripcion, int stock, float precio, float ganaciaPorcentual, boolean disponibilidad, boolean esImportado,float descuento) {
+        if (identificadorAlfNum.length() != 5) {
+            throw new IllegalArgumentException("El identificador debe tener 5 caracteres.");
+        }
+        this.esImportado=esImportado;
+        this.descripcion = descripcion;
+        this.identificadorAlfNum = identificadorAlfNum;
+        this.sotck = stock;
+        this.precio = precio;
+        this.gananciaPorcentual = ganaciaPorcentual;
+        this.disponibilidad = disponibilidad;
+        this.descuento=descuento;
+        if(descuento <0 ){
+                throw new IllegalArgumentException("El descuento No puede ser menor a 0%");
+        }
 
-   }
+    }
 
-   public String getDescripcion() {
-      return descripcion;
-   }
+    public float getDescuento() {
+        return descuento;
+    }
 
-   public void setDescripcion(String descripcion) {
-      this.descripcion = descripcion;
-   }
+    public void setDescuento(float descuento) {
+        this.descuento = descuento;
+    }
 
-   public String getIdentificadorAlfNum() {
-      return identificadorAlfNum;
-   }
+    public String getDescripcion() {
+        return descripcion;
+    }
 
-   public void setIdentificadorAlfNum(String identificadorAlfNum) {
-      if (identificadorAlfNum.length() == 5) {
-         this.identificadorAlfNum = identificadorAlfNum;
-      } else {
-         throw new IllegalArgumentException("El identificador debe tener 5 caracteres.");
-      }
-   }
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
 
-   public int getSotck() {
-      return sotck;
-   }
+    public String getIdentificadorAlfNum() {
+        return identificadorAlfNum;
+    }
 
-   public void setSotck(int sotck) {
-      this.sotck = sotck;
-   }
+    public void setIdentificadorAlfNum(String identificadorAlfNum) {
+        if (identificadorAlfNum.length() == 5) {
+            this.identificadorAlfNum = identificadorAlfNum;
+        } else {
+            throw new IllegalArgumentException("El identificador debe tener 5 caracteres.");
+        }
+    }
 
-   public float getPrecio() {
-      return precio;
-   }
+    public int getSotck() {
+        return sotck;
+    }
 
-   public void setPrecio(float precio) {
-      this.precio = precio;
-   }
+    public void setSotck(int sotck) {
+        this.sotck = sotck;
+    }
 
-   public float getGanaciaPorcentual() {
-      return gananciaPorcentual;
-   }
+    public float getPrecio() {
+        return precio;
+    }
 
-   public void setGanaciaPorcentual(float ganaciaPorcentual) {
-      this.gananciaPorcentual = ganaciaPorcentual;
-   }
+    public void setPrecio(float precio) {
+        this.precio = precio;
+    }
 
-   public boolean isDisponibilidad() {
-      return disponibilidad;
-   }
+    public float getGanaciaPorcentual() {
+        return gananciaPorcentual;
+    }
 
-   public void setDisponibilidad(boolean disponibilidad) {
-      this.disponibilidad = disponibilidad;
-   }
-   public float calcularPrecioVenta() {
-      return precio + (precio * gananciaPorcentual / 100);
-   }
+    public void setGanaciaPorcentual(float ganaciaPorcentual) {
+        this.gananciaPorcentual = ganaciaPorcentual;
+    }
 
-   protected static String generarCodigo(String codigoAlfaUnico, int contadorProducto) {
-      contadorProducto++;
-      return String.format(codigoAlfaUnico + "%03d", contadorProducto);
-   }
-   public void descontarStock(int sotckADescontar){
-      this.sotck = getSotck() - sotckADescontar ;
-   }
-   public float generarTicket(int cantidadVendida){
-      System.out.println(identificadorAlfNum + " " + descripcion.toUpperCase() + " " + cantidadVendida + " x "+ calcularPrecioVenta() ) ;
-      return cantidadVendida * calcularPrecioVenta();
-   }
-   public void mostrarInfoProducto(){
-      System.out.println("ID: " + identificadorAlfNum);
-      System.out.println("Descripción: " + descripcion );
-      System.out.println("Cantidad en stock: " + sotck);
-      System.out.println("Precio por unidad: $" + precio);
-      System.out.println("Porcentaje de ganancia: " + gananciaPorcentual + "%");
-      System.out.println("Disponible para venta: " + (disponibilidad ? "Sí" : "No"));
-      System.out.println("Precio de venta: $" + calcularPrecioVenta());
+    public boolean isDisponibilidad() {
+        return disponibilidad;
+    }
+
+    public void setDisponibilidad(boolean disponibilidad) {
+        this.disponibilidad = disponibilidad;
+    }
+
+    public float calcularPrecioVenta() {
+        if (esImportado==true){
+            float precioConGanacia= precio + (precio * gananciaPorcentual / 100);
+            float precioConImpuesto = precioConGanacia + (precioConGanacia * 12 / 100);
+            return precioConGanacia + precioConImpuesto;
+        }
+        else {return precio + (precio * gananciaPorcentual / 100);}
+
+    }
+
+    protected static String generarCodigo(String codigoAlfaUnico, int contadorProducto) {
+        contadorProducto++;
+        return String.format(codigoAlfaUnico + "%03d", contadorProducto);
+    }
+
+    public void descontarStock(int sotckADescontar) {
+        this.sotck = getSotck() - sotckADescontar;
+        if (sotck == 0) {
+            disponibilidad = false;
+        }
+    }
 
 
-   }
+
+    public void mostrarInfoProducto() {
+        System.out.println("----------------------------|----------------------------");
+        System.out.println("ID: " + identificadorAlfNum);
+        System.out.println("Descripción: " + descripcion);
+        System.out.println("Cantidad en stock: " + sotck);
+        System.out.println("Precio por unidad: $" + precio);
+        System.out.println("Porcentaje de ganancia: " + gananciaPorcentual + "%");
+        System.out.println("Disponible para venta: " + (disponibilidad ? "Sí" : "No"));
+        System.out.println("Precio de venta: $" + calcularPrecioVenta());
+        System.out.println("Descuento: " + descuento +"%" );
+        System.out.println("----------------------------|----------------------------");
+
+
+    }
+
 
 }
-
-
