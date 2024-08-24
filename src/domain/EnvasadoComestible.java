@@ -21,25 +21,15 @@ public class EnvasadoComestible extends Envasado {
 
     }
 
-
     public static LocalDate fechaVencimientoYYYY_MM_DD(int anio, int mes, int dia) {
         try {
-            return LocalDate.of(anio, mes, dia);
+             return LocalDate.of(anio, mes, dia);
 
         } catch (DateTimeException e) {
-            System.out.println("|---------------------------------------------------------------------|");
-            System.out.println("|                ##/##/##/##/##_ATENCION_##/##/##/##/##               |");
-            System.out.println("|                   Fecha de vencimiento no válida                    |");
-            System.out.println("|   Se asignara la siguiente fecha '6060.01.01' modifique mas tarde   |");
-            System.out.println("|                ##/##/##/##/##_ATENCION_##/##/##/##/##               |");
-            System.out.println("|---------------------------------------------------------------------|");
-            return LocalDate.of(6060, 01, 01);
-
+            throw new IllegalArgumentException("Ingrese una Fecha Valida" );
 
         }
-
     }
-
     @Override
     public void mostrarInfoProducto() {
         System.out.println("----------------------------|----------------------------");

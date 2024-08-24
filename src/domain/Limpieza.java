@@ -31,7 +31,7 @@ public class Limpieza extends Producto {
         if (opciones_De_Apliacion.contains(tipoMAYUS)) {
             return tipoMAYUS;
         } else
-            return "Error";
+            throw new IllegalArgumentException("Ingrese una categoria de uso valida : Cocina, Banio, Ropa, Multiuso ");
 
 
     }

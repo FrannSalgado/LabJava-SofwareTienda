@@ -93,12 +93,12 @@ public abstract class Producto {
     }
 
     public float calcularPrecioVenta() {
+        float precioConGanacia= precio + (precio * gananciaPorcentual / 100);
         if (esImportado==true){
-            float precioConGanacia= precio + (precio * gananciaPorcentual / 100);
             float precioConImpuesto = precioConGanacia + (precioConGanacia * 12 / 100);
-            return precioConGanacia + precioConImpuesto;
+            return precioConImpuesto - (precioConImpuesto * descuento/ 100);
         }
-        else {return precio + (precio * gananciaPorcentual / 100);}
+        else {return precioConGanacia - (precioConGanacia * descuento/ 100);}
 
     }
 

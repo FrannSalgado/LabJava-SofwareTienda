@@ -1,25 +1,31 @@
 package domain;
 
 public class Bebida extends Producto {
-    private static final String ALFA_CODE_BEBIDA= "AC";
+    private static final String ALFA_CODE_BEBIDA = "AC";
     private float graduacionAlcoholica;
     private static int cantidadRegistrada = 0;
 
-    private double  calorias;
+    private double calorias;
 
-    public Bebida( String descripcion, int stock, float precio, float ganaciaPorcentual, boolean disponibilidad, float graduacionAlcoholica, boolean esImportado, double calorias, float descuento) {
-        super(generarCodigo(ALFA_CODE_BEBIDA, cantidadRegistrada), descripcion, stock, precio, ganaciaPorcentual, disponibilidad, esImportado,descuento);
+    public Bebida(String descripcion, int stock, float precio, float ganaciaPorcentual, boolean disponibilidad, float graduacionAlcoholica, boolean esImportado, double calorias, float descuento) {
+        super(generarCodigo(ALFA_CODE_BEBIDA, cantidadRegistrada), descripcion, stock, precio, ganaciaPorcentual, disponibilidad, esImportado, descuento);
         this.cantidadRegistrada++;
         this.graduacionAlcoholica = graduacionAlcoholica;
-        this.calorias= calcularCalorias( graduacionAlcoholica, calorias);
-        if(descuento >10 ){
+        if (graduacionAlcoholica >= 0) {
+            this.calorias = calcularCalorias(graduacionAlcoholica, calorias);
+        } else {
+            throw new IllegalArgumentException("La Graduacion alcoholica no pude ser menor a 0 ");
+        }
+
+        if (descuento > 10) {
             throw new IllegalArgumentException("El descuento No puede ser Mayor a 10%");
         }
     }
-    private double  calcularCalorias(float graduacionAlcoholica, double calorias){
-        double resultadoCalorias ;
+
+    private double calcularCalorias(float graduacionAlcoholica, double calorias) {
+        double resultadoCalorias;
         if (graduacionAlcoholica >= 0 && graduacionAlcoholica <= 2) {
-            return calorias ;
+            return calorias;
         } else if (graduacionAlcoholica > 2 && graduacionAlcoholica <= 4.5) {
             resultadoCalorias = calorias * 1.25;
         } else if (graduacionAlcoholica > 4.5) {
@@ -45,6 +51,7 @@ public class Bebida extends Producto {
     public void setEsImportado(boolean esImportado) {
         this.esImportado = esImportado;
     }
+
     @Override
     public void mostrarInfoProducto() {
         System.out.println("----------------------------|----------------------------");
@@ -58,9 +65,8 @@ public class Bebida extends Producto {
         System.out.println("Porcentaje de ganancia: " + gananciaPorcentual + "%");
         System.out.println("Disponible para venta: " + (disponibilidad ? "Sí" : "No"));
         System.out.println("Precio de venta: $" + calcularPrecioVenta());
-        System.out.println("Descuento: " + descuento +"%" );
+        System.out.println("Descuento: " + descuento + "%");
         System.out.println("----------------------------|----------------------------");
-
 
 
     }
